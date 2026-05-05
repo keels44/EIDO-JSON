@@ -879,6 +879,12 @@ components:
               type: string
               description: 
                 Content of the SIP identity header. Required if known.
+            sipIdentities:
+              type: array
+              description:
+                Contents of the SIP identity headers. Required if known.
+              items:
+                type: string
             locationReference:
               type: array
               description:
