@@ -154,12 +154,12 @@ components:
               description: Shall only contains values present in the Agency Role registry
               items:
                 type: string
-              minItems: 1
+                minItems: 1
             agencyType:
               type: array
               items:
                 type: string
-              minItems: 1
+                minItems: 1
               description: 
                 'One or more members of a list of available provider and agency types. 
                 The agency types are taken from the IANA urn:emergency:service:responder 
@@ -220,7 +220,7 @@ components:
               type: array
               items:
                 type: string
-              minItems: 1
+                minItems: 1
               description: Shall only contains values present in the Agent Role registry
             agencyReference:
               $ref: '#/components/schemas/ReferenceType'
