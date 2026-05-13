@@ -154,10 +154,12 @@ components:
               description: Shall only contains values present in the Agency Role registry
               items:
                 type: string
+              minItems: 1
             agencyType:
               type: array
               items:
                 type: string
+              minItems: 1
               description: 
                 'One or more members of a list of available provider and agency types. 
                 The agency types are taken from the IANA urn:emergency:service:responder 
@@ -363,6 +365,25 @@ components:
       description: A data type for a location associated with an incident.
       allOf:
         - $ref: '#/components/schemas/PrologueType'
+        # Must not have both locationByValue and locationByReferenceUrl
+        - not:
+            required: [locationByValue, locationByReferenceUrl]
+
+          # Must not have both crossStreetByValue and crossStreetByReferenceUrl
+        - not:
+            required: [crossStreetByValue, crossStreetByReferenceUrl]
+
+          # Must not have both intersectingStreetByValue and intersectingStreetByReferenceUrl
+        - not:
+            required: [intersectingStreetByValue, intersectingStreetByReferenceUrl]
+
+          # Must not have both cross street and intersecting street
+        - not:
+            anyOf:
+              - required: [crossStreetByValue, intersectingStreetByValue]
+              - required: [crossStreetByValue, intersectingStreetByReferenceUrl]
+              - required: [crossStreetByReferenceUrl, intersectingStreetByValue]
+              - required: [crossStreetByReferenceUrl, intersectingStreetByReferenceUrl]
         - type: object
           required:
             - locationTypeDescriptionRegistryText
@@ -397,12 +418,13 @@ components:
               items:
                 type: string
             crossStreetByReferenceUrl:
-              type: array
+              type: array              
               description:
                 A URL where a nearest cross street to an incident's location can
                 be dereferenced.
               items:
                 type: string
+                format: uri
             intersectingStreetByValue:
               type: array
               description: An additional street, that with the location forms an
@@ -416,6 +438,7 @@ components:
                 an intersection, can be dereferenced.
               items:
                 type: string
+                format: uri
             cellTowerSectorId:
               type: string
               description:
@@ -942,6 +965,7 @@ components:
                 else  the URI in the From header.
               items:
                 type: string
+                format: uri
             deviceContactHeader:
               type: string
               description: 
@@ -1157,7 +1181,7 @@ components:
           properties:
             uri:
               type: string
-              format: uri-reference
+              format: uri
               description: A URI which when dereferenced will retrieve the media.  
             contentType:
               type: string
@@ -1192,7 +1216,19 @@ components:
         between agents and agencies for this Incident. This would include information about radio 
         channels, talk groups, chat room, etc..
       allOf:
-        - $ref: '#/components/schemas/PrologueType'
+        - $ref: '#/components/schemas/PrologueType'   
+
+        # Must have either sharedCommunicationResourceByValue or sharedCommunicationResourceByReferenceUrl
+        - anyOf:
+            - required: [sharedCommunicationResourceByValue]
+            - required: [sharedCommunicationResourceByReferenceUrl]
+
+        # Must not have both
+        - not:
+            required:
+                - sharedCommunicationResourceByValue
+                - sharedCommunicationResourceByReferenceUrl
+        
         - type: object
           required:
             - sharedCommunicationResourceType
@@ -1204,6 +1240,7 @@ components:
                 SharedCommunicationResourceType registry.
             sharedCommunicationResourceByReferenceUrl:
               type: string
+              format: uri
               description: 
                 A URL referencing a link to a Shared Communication detail Data Component. This allows 
                 the dereferencing of Shared Communication Resource detail associated with an Incident.
